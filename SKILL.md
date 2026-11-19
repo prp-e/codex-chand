@@ -1,0 +1,25 @@
+---
+name: codex-chand
+description: Return a one-line quote for a named asset or show the full bilingual Codex Chand dashboard when invoked without arguments for fiat currencies, crypto, gold, silver, and oil in toman or US dollars. Use for نرخ ارز، دلار آزاد، طلا، رمزارز و نفت when the user wants a price snapshot or chart.
+---
+
+# Codex Chand
+
+When invoked without arguments (for example, `$codex-chand` by itself), show the full bilingual dashboard for the entire watchlist. Verify the latest available prices, display the source observation times, and use a dated fallback when necessary. Proceed directly without asking which asset to show.
+
+For a single named asset after an invocation such as `@codex chand دلار آمریکا` or `$codex-chand USD`, fetch only the requested quote and the open-market USD conversion rate if needed. Reply in one plain-text line with the asset, its quoted quantity, and its price in both toman and US dollars. Use the user's language and the number formatting below. For USD, show the toman price of one dollar and its face value of one US dollar. Example with placeholder price: «۱ دلار آمریکا = {نرخ} تومان | ۱ دلار آمریکا». Attach the source link at the end of the same line when citing fetched data. Give an observation date on that line for delayed quotes or dated fallbacks, or say the quote is unavailable if none is verified. Skip dashboards, tables, headings, and other assets unless the user explicitly requests them.
+
+Use [source notes](sources.md) to collect dated observations. For a dashboard, adapt [the HTML template](assets/market-prices.html). Its embedded observations are a worked snapshot from 2026-11-19. Replace them and both language versions of the date, source links, and relevant captions for a refresh. Use the old snapshot only when explicitly showing the example or a dated fallback. If a fresh quote is unavailable, label it as unavailable or show the last verified price with its own date.
+
+Keep the established watchlist unless the user narrows it:
+
+- Fiat: USD, CAD, AUD, EUR, GBP, OMR, TRY, SAR, IQD, KWD, CNY, JPY.
+- Crypto: BTC, ETH, USDT, SOL, TRX.
+- Metals: world gold and silver per troy ounce, world pure gold per gram, Iranian 18K gold per gram.
+- Oil: Brent spot, WTI spot, OPEC basket per barrel. Dubai monthly is an alternative when requested.
+
+For the chart, keep Persian and toman as defaults. The English toggle translates all labels and dates, switches RTL to LTR and changes digits and separators. Use Persian digits with U+066B (٫) for grouping and ASCII period for decimals per the user's preference. Use standard US formatting in English. Changing language preserves unit and asset category. Include the USD option and label it as an equivalent when converted from a local quote.
+
+Normalize data to toman internally. Divide IRR by 10, and divide any quote for 100 units by 100 before using it as a unit price. Use a single verified Tehran open-market USD rate for the display snapshot. Multiply worldwide USD prices by that rate for toman; divide local toman prices by that rate for a USD equivalent. Derive pure gold per gram from the troy ounce using 31.1034768 grams. Use the local 18K quote directly. Distinguish local crypto quotes, including USDT, from international USD equivalents. Keep the actual observation date of each delayed oil benchmark.
+
+For inline Codex presentation, use the visualization surface when available and keep the HTML fragment self-contained with an embedded snapshot. For a standalone HTML deliverable, wrap the fragment in a full document and supply equivalents for host-only styles and theme variables. Keep credentials server-side. Before delivery, verify all requested rows, one local and one global conversion, both number formats, both languages, and the unit switch.
