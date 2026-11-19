@@ -1,0 +1,140 @@
+<section id="tehran-market-board" dir="rtl" lang="fa">
+  <header>
+    <div><h1 data-title>نبض بازار</h1><p class="text-small text-muted" data-date>۲۴ دارایی · برداشت ۲۸ آبان ۱۴۰۵، ساعت ۱۰:۳۵ تهران</p></div>
+    <div class="controls"><button type="button" class="btn" data-language lang="en">English</button><label><span data-unit-label>واحد قیمت</span> <select class="form-select" data-unit><option value="toman">تومان</option><option value="usd">دلار آمریکا</option></select></label></div>
+  </header>
+  <nav aria-label="گروه دارایی" data-groups></nav>
+  <section class="market-panel" aria-labelledby="market-heading">
+    <h2 id="market-heading"></h2>
+    <p class="text-small text-muted" data-caption></p>
+    <ol data-bars aria-label="مقایسه قیمت دارایی‌ها"></ol>
+  </section>
+  <footer class="text-small text-muted"><span data-sources>منابع داده</span> <a href="https://nerkhara.com/en/" target="_blank" rel="noopener" data-provider>نرخ‌آرا</a> · <a href="https://www.eia.gov/petroleum/prices/" target="_blank" rel="noopener">EIA</a></footer>
+</section>
+<style>
+#tehran-market-board {display:grid;gap:1rem;color:var(--foreground)}
+#tehran-market-board header {display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap}
+#tehran-market-board .controls {display:flex;gap:.65rem;align-items:end;flex-wrap:wrap}
+#tehran-market-board nav {display:flex;gap:.35rem;flex-wrap:wrap}
+#tehran-market-board .market-panel {background:var(--card);color:var(--card-foreground);border:1px solid var(--border);border-radius:1rem;padding:clamp(.75rem,3vw,1.35rem)}
+#tehran-market-board ol {list-style:none;margin:1rem 0 0;padding:0;display:grid;gap:.75rem}
+#tehran-market-board li {display:grid;gap:.25rem}
+#tehran-market-board .quote {display:flex;justify-content:space-between;align-items:baseline;gap:.4rem;flex-wrap:wrap}
+#tehran-market-board bdi {color:var(--muted-foreground)}
+#tehran-market-board .track {height:.38rem;border-radius:999px;background:var(--muted);overflow:hidden}
+#tehran-market-board .bar {display:block;height:100%;border-radius:inherit;background:var(--series)}
+#tehran-market-board footer a {color:var(--foreground)}
+</style>
+<script>
+(() => {
+  const root = document.getElementById('tehran-market-board');
+  const dollar = 266315;
+  const gold = 3728.64;
+  const groups = [
+    {name:'ارزها', note:'هر واحد ارز · دلار آزاد تهران و نرخ‌های متقاطع جهانی', series:1, rows:[
+      ['دلار آمریکا','USD',dollar],['دلار کانادا','CAD',185948],['دلار استرالیا','AUD',178927],
+      ['یورو','EUR',292268],['پوند انگلیس','GBP',350414],['ریال عمان','OMR',692627],
+      ['لیر ترکیه','TRY',5276],['ریال عربستان','SAR',71017],['دینار عراق','IQD',176],
+      ['دینار کویت','KWD',856869],['یوان چین','CNY',39863],['ین ژاپن','JPY',1671]
+    ]},
+    {name:'رمزارزها', note:'هر واحد رمزارز · میانگین بازارهای ایران', series:2, rows:[
+      ['بیت‌کوین','BTC',17188287152],['اتریوم','ETH',488393473],['تتر','USDT',270989],
+      ['سولانا','SOL',20323825],['ترون','TRX',84658]
+    ]},
+    {name:'طلا و نقره', note:'قیمت جهانی × دلار آزاد · اونس تروا و گرم طلای خالص · گرم ۱۸ عیار از بازار ایران', series:3, rows:[
+      ['اونس طلا','XAU',gold*dollar],['گرم طلای خالص','XAU/g',gold*dollar/31.1034768],
+      ['اونس نقره','XAG',45.23*dollar],['گرم طلای ۱۸ عیار','18K/g',24372558]
+    ]},
+    {name:'نفت', note:'هر بشکه · قیمت دلاری روز درج‌شده × دلار آزاد ۲۸ آبان', series:4, rows:[
+      ['برنت نقدی','EIA · ۲۶ آبان',92.94*dollar],['WTI نقدی','EIA · ۲۶ آبان',89.53*dollar],
+      ['سبد اوپک','۲۷ آبان',86.45*dollar]
+    ]}
+  ];
+  const english = [
+    ['Currencies','Per currency unit · Tehran open-market USD and global cross rates',
+      ['US dollar','Canadian dollar','Australian dollar','Euro','British pound','Omani rial','Turkish lira','Saudi riyal','Iraqi dinar','Kuwaiti dinar','Chinese yuan','Japanese yen']],
+    ['Crypto','Per coin or token · Average across Iranian markets',
+      ['Bitcoin','Ethereum','Tether','Solana','TRON']],
+    ['Gold and silver','Global prices × open-market USD · Per troy ounce or gram of pure gold · 18K from the Iranian market',
+      ['Gold per troy ounce','Pure gold per gram','Silver per troy ounce','18K gold per gram']],
+    ['Oil','Per barrel · USD price on the stated date × Nov 19 open-market USD rate',
+      ['Brent spot','WTI spot','OPEC basket'],['EIA · Nov 17','EIA · Nov 17','Nov 18']]
+  ];
+  const copy = {
+    fa: ['نبض بازار','۲۴ دارایی · برداشت ۲۸ آبان ۱۴۰۵، ساعت ۱۰:۳۵ تهران','واحد قیمت','تومان','دلار آمریکا','منابع داده','نرخ‌آرا','گروه دارایی','مقایسه قیمت دارایی‌ها','معادل دلاری با نرخ دلار آزاد'],
+    en: ['Market Pulse','24 assets · Snapshot Nov 19, 2026 at 10:35 Tehran time','Price unit','Toman','US dollars','Data sources','NerkhAra','Asset class','Asset price comparison','USD equivalent at the open-market rate']
+  };
+  let language = 'fa';
+  function formatPrice(value, showDollars) {
+    const format = new Intl.NumberFormat(language === 'fa' ? 'fa-IR' : 'en-US', {
+      maximumFractionDigits: showDollars ? 4 : 0
+    });
+    return format.formatToParts(value).map(({type,value}) => {
+      if (language === 'fa' && type === 'group') return '٫';
+      if (type === 'decimal') return '.';
+      return value;
+    }).join('');
+  }
+  const nav = root.querySelector('[data-groups]');
+  const unit = root.querySelector('[data-unit]');
+  const languageButton = root.querySelector('[data-language]');
+  const list = root.querySelector('[data-bars]');
+  let selected = 0;
+  const buttons = groups.map((group, index) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'btn';
+    button.textContent = group.name;
+    button.addEventListener('click', () => { selected = index; render(); });
+    nav.append(button);
+    return button;
+  });
+  function render() {
+    const isEnglish = language === 'en';
+    const [title,date,unitLabel,tomanLabel,dollarLabel,sources,provider,groupLabel,chartLabel,usdNote] = copy[language];
+    root.lang = language;
+    root.dir = isEnglish ? 'ltr' : 'rtl';
+    languageButton.lang = isEnglish ? 'fa' : 'en';
+    languageButton.textContent = isEnglish ? 'فارسی' : 'English';
+    root.querySelector('[data-title]').textContent = title;
+    root.querySelector('[data-date]').textContent = date;
+    root.querySelector('[data-unit-label]').textContent = unitLabel;
+    root.querySelector('[data-sources]').textContent = sources;
+    root.querySelector('[data-provider]').textContent = provider;
+    nav.setAttribute('aria-label', groupLabel);
+    list.setAttribute('aria-label', chartLabel);
+    unit.options[0].textContent = tomanLabel;
+    unit.options[1].textContent = dollarLabel;
+    const group = groups[selected];
+    const [englishName, englishNote, englishRows, englishCodes] = english[selected];
+    const showDollars = unit.value === 'usd';
+    const label = showDollars ? dollarLabel : tomanLabel;
+    const rows = group.rows.map(([name,code,price], index) => [
+      isEnglish ? englishRows[index] : name,
+      isEnglish && englishCodes ? englishCodes[index] : code,
+      price
+    ]).sort((a,b) => b[2]-a[2]);
+    const max = rows[0][2];
+    root.querySelector('#market-heading').textContent = (isEnglish ? englishName : group.name) + ' · ' + label;
+    root.querySelector('[data-caption]').textContent = (isEnglish ? englishNote : group.note) + (showDollars ? ' · ' + usdNote : '');
+    buttons.forEach((button,index) => {
+      button.textContent = isEnglish ? english[index][0] : groups[index].name;
+      button.setAttribute('aria-pressed', String(index === selected));
+    });
+    list.style.setProperty('--series', 'var(--viz-series-' + group.series + ', var(--primary))');
+    list.innerHTML = rows.map(([name,code,price]) => {
+      const value = formatPrice(showDollars ? price / dollar : price, showDollars);
+      return '<li><div class="quote"><span>' + name + ' <bdi class="text-small">' + code +
+        '</bdi></span><span dir="ltr" class="tabular-nums">' + value +
+        '</span></div><div class="track" aria-hidden="true"><span class="bar" style="width:' +
+        (price/max*100) + '%"></span></div></li>';
+    }).join('');
+  }
+  unit.addEventListener('change', render);
+  languageButton.addEventListener('click', () => {
+    language = language === 'fa' ? 'en' : 'fa';
+    render();
+  });
+  render();
+})();
+</script>
