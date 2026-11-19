@@ -2,6 +2,18 @@
 
 Codex Chand is a bilingual Codex skill for checking Tehran open-market exchange rates, cryptocurrencies, precious metals, and crude oil. Ask for one asset to get a one-line quote in toman and US dollars, or invoke the skill by itself to see the full watchlist.
 
+## Dashboard screenshots
+
+Both views use the bundled November 19, 2026 example snapshot.
+
+### Persian · Exchange rates in toman
+
+![Persian dashboard showing Tehran exchange rates in toman](assets/dashboard-fa.png)
+
+### English · Crypto in US dollars
+
+![English dashboard showing crypto prices in US dollar equivalents](assets/dashboard-en.png)
+
 ## Install
 
 Clone the repository into your Codex skills directory. For this private repository, use GitHub credentials with read access.
