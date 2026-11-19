@@ -16,7 +16,7 @@ Both views use the bundled November 19, 2026 example snapshot.
 
 ## Install
 
-Clone the repository into your Codex skills directory. For this private repository, use GitHub credentials with read access.
+Clone the repository into your Codex skills directory.
 
 ```sh
 mkdir -p ~/.codex/skills
