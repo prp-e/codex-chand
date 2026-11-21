@@ -1,18 +1,33 @@
 # Codex Chand | کدکس چند
 
-Codex Chand is a bilingual Codex skill for checking Tehran open-market exchange rates, cryptocurrencies, Iranian gold coins, metals, and energy benchmarks. Ask for one asset to get a one-line quote in toman and US dollars, or invoke the skill by itself to see the full watchlist. Add a date range to explore price history and technical indicators.
+**Tehran market quotes, historical charts, and technical analysis in Persian and English.**
 
-## Dashboard screenshots
+Run `$codex-chand` for the 42-quote dashboard, add an asset for a one-line quote, or add a date range to explore price history. Quotes are available in toman and US dollars where source coverage permits.
 
-These screenshots show the November 19, 2026 dashboard. The current template includes 42 rows in five categories.
+[Install](#install) · [Usage](#usage) · [Historical charts](#historical-charts) · [Supported assets](#supported-assets)
 
-### Persian · Exchange rates in toman
+## Screenshots
 
-![Persian dashboard showing Tehran exchange rates in toman](assets/dashboard-fa.png)
+### From a quote to a chart
 
-### English · Crypto in US dollars
+Click an asset to open its chart settings. This example selects a 30-day range and RSI 14 for the Emami coin.
 
-![English dashboard showing crypto prices in US dollar equivalents](assets/dashboard-en.png)
+![Persian gold-coin dashboard with the chart settings form directly below Emami coin](assets/dashboard-inline-settings.png)
+
+### Price history
+
+| Interactive price and RSI | Seven-day candlesticks |
+| --- | --- |
+| ![Persian line chart for the euro in toman, with an RSI 14 panel](assets/history-euro-rsi.png) | ![Persian candlestick chart for the Tehran open-market dollar in toman](assets/history-usd-candles.png) |
+| Direct chart request with range and indicator controls | Dashboard result with the selected settings applied |
+
+### Dashboard views
+
+| Persian · Exchange rates in toman | English · Crypto in US dollars |
+| --- | --- |
+| ![Persian exchange rate dashboard in toman](assets/dashboard-fa.png) | ![English crypto dashboard in US dollar equivalents](assets/dashboard-en.png) |
+
+The dashboard views use the November 19, 2026 example. The form and historical chart examples were captured from the installed skill on November 21, 2026.
 
 ## Install
 
