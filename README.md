@@ -41,7 +41,11 @@ Single-asset replies use the language of the request. In the dashboard, switch b
 
 ## Historical charts
 
-Click an asset name in the interactive Codex dashboard and confirm the follow-up to open its price history. The chart starts at 90 days and uses the dashboard's selected language and currency where data is available. The follow-up includes written technical analysis of the opening range. It covers trend and drawdown, moving averages, RSI, and potential support and resistance supported by dated observations. Changing the chart controls updates the chart and its range statistics. You can also request a chart by typing an asset and a date range.
+1. Click an asset name in the interactive Codex dashboard. A settings form opens directly below that asset.
+2. Select a date range, currency, chart type, and indicator. The form starts with 90 days and the dashboard's current currency.
+3. Select **Show chart and analysis** and confirm the follow-up in Codex. The form closes, and Codex displays the chart and written technical analysis using your selections where data is available.
+
+The result keeps the selected settings and includes an observation scrubber. The analysis covers trend, drawdown, moving averages, RSI, and potential support and resistance backed by dated observations. You can also request an interactive chart in chat by typing an asset and a date range. Use a direct request for custom start and end dates.
 
 - **Ranges** — 7, 14, 30, 60, 90, or 180 days, 1, 2, or 5 years, year to date, all available data, or custom start and end dates. Coverage depends on the source and asset.
 - **Chart types** — Line charts for sampled prices or averages. Candles are available when the series has verified open, high, low, and close values.
