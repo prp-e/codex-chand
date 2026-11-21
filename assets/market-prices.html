@@ -1,23 +1,38 @@
 <section id="tehran-market-board" dir="rtl" lang="fa">
   <header>
-    <div><h1 data-title>نبض بازار</h1><p class="text-small text-muted" data-date>۴۲ دارایی · بررسی ۳۰ آبان ۱۴۰۵ · نرخ‌آرا: نسخهٔ ۲۹ آبان، ساعت ۱۴:۰۱ تهران</p></div>
+    <div><h1 data-title>نبض بازار</h1><p class="text-small text-muted" data-date>۶۰ ردیف · ۳۰ آبان ۱۴۰۵ · نسخهٔ نرخ‌آرا ۱۵:۵۳ تهران</p></div>
     <div class="controls"><button type="button" class="btn" data-language lang="en">English</button><label><span data-unit-label>واحد قیمت</span> <select class="form-select" data-unit><option value="toman">تومان</option><option value="usd">دلار آمریکا</option></select></label></div>
   </header>
   <nav aria-label="گروه دارایی" data-groups></nav>
   <section class="market-panel" aria-labelledby="market-heading">
     <h2 id="market-heading"></h2>
     <p class="text-small text-muted" data-caption></p>
-    <ol aria-live="polite" data-bars aria-label="مقایسه قیمت دارایی‌ها"></ol>
-    <p class="text-small" data-history-status role="status"></p>
+    <form class="card" id="chand-history-settings" data-history-form aria-labelledby="chand-history-request-title" hidden>
+      <h3 id="chand-history-request-title" data-history-title></h3>
+      <div class="viz-controls">
+        <label class="form-label"><span data-history-label="range"></span><select class="form-select" name="range"></select></label>
+        <label class="form-label"><span data-history-label="currency"></span><select class="form-select" name="currency"></select></label>
+        <label class="form-label"><span data-history-label="type"></span><select class="form-select" name="type"></select></label>
+        <label class="form-label"><span data-history-label="indicator"></span><select class="form-select" name="indicator"></select></label>
+      </div>
+      <div class="viz-row">
+        <button class="btn btn-primary" type="submit" data-history-submit></button>
+        <button class="btn" type="button" data-history-cancel></button>
+      </div>
+      <p class="text-small" data-history-status role="status"></p>
+    </form>
+    <ol data-bars aria-label="مقایسه قیمت دارایی‌ها"></ol>
   </section>
-  <footer class="text-small text-muted"><span data-sources>منابع داده</span> <a href="https://nerkhara.com/en/" target="_blank" rel="noopener" data-provider>نرخ‌آرا</a> · <a href="https://www.eia.gov/dnav/pet/hist/rbrted.htm" target="_blank" rel="noopener">EIA · Brent</a> · <a href="https://www.eia.gov/dnav/pet/hist/rwtcd.htm" target="_blank" rel="noopener">EIA · WTI</a> · <a href="https://www.eia.gov/dnav/ng/hist/rngwhhdd.htm" target="_blank" rel="noopener">EIA · Henry Hub</a> · <a href="https://thedocs.worldbank.org/en/doc/74e8be41ceb20fa0da750cda2f6b9e4e-0050012026/related/CMO-Pink-Sheet-November-2026.pdf" target="_blank" rel="noopener">Pink Sheet</a></footer>
+  <footer class="text-small text-muted"><span data-sources>منابع داده</span> <a href="https://nerkhara.com/en/" target="_blank" rel="noopener" data-provider>نرخ‌آرا</a> · <a href="https://www.eia.gov/petroleum/prices/" target="_blank" rel="noopener">EIA</a> · <a href="https://cdn.tsetmc.com/api/MarketData/GetMarketOverview/1" target="_blank" rel="noopener">TSETMC</a> · <a href="https://stockanalysis.com/stocks/aapl/history/" target="_blank" rel="noopener">Stock Analysis</a> · <a href="https://markets.ptc.ft.markitdigital.com/data/equities/tearsheet/historical?s=MC%3APAR" target="_blank" rel="noopener">LVMH</a> · <a href="https://www.eia.gov/dnav/ng/hist/rngwhhdd.htm" target="_blank" rel="noopener">Henry Hub</a> · <a href="https://thedocs.worldbank.org/en/doc/74e8be41ceb20fa0da750cda2f6b9e4e-0050012026/related/CMO-Pink-Sheet-November-2026.pdf" target="_blank" rel="noopener">Pink Sheet</a></footer>
 </section>
 <style>
 #tehran-market-board {display:grid;gap:1rem;color:var(--foreground)}
 #tehran-market-board header {display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap}
 #tehran-market-board .controls {display:flex;gap:.65rem;align-items:end;flex-wrap:wrap}
 #tehran-market-board nav {display:flex;gap:.35rem;flex-wrap:wrap}
+#tehran-market-board .market-panel {background:var(--card);color:var(--card-foreground);border:1px solid var(--border);border-radius:1rem;padding:clamp(.75rem,3vw,1.35rem)}
 #tehran-market-board ol {list-style:none;margin:1rem 0 0;padding:0;display:grid;gap:.75rem}
+#tehran-market-board [data-history-slot]:empty {display:none}
 #tehran-market-board li {display:grid;gap:.25rem}
 #tehran-market-board .quote {display:flex;justify-content:space-between;align-items:baseline;gap:.4rem;flex-wrap:wrap}
 #tehran-market-board bdi {color:var(--muted-foreground)}
@@ -28,35 +43,46 @@
 <script>
 (() => {
   const root = document.getElementById('tehran-market-board');
-  const dollar = 270335;
-  const gold = 3581.58;
+  const dollar = 270265.0;
   const groups = [
     {name:'ارزها', note:'هر واحد ارز · دلار آزاد تهران و نرخ‌های متقاطع جهانی', series:1, rows:[
-      ['دلار آمریکا','USD',dollar],['دلار کانادا','CAD',188716],['دلار استرالیا','AUD',180356],
-      ['یورو','EUR',296810],['پوند انگلیس','GBP',354584],['ریال عمان','OMR',703082],
-      ['لیر ترکیه','TRY',5350],['ریال عربستان','SAR',72089],['دینار عراق','IQD',179],
-      ['دینار کویت','KWD',868965],['یوان چین','CNY',40397],['ین ژاپن','JPY',1692],
-      ['درهم امارات','AED',73611],['فرانک سوئیس','CHF',320530]
+      ['دلار آمریکا','USD',270265.0],['دلار کانادا','CAD',188575.0],['دلار استرالیا','AUD',179435.0],
+      ['یورو','EUR',296636.0],['پوند انگلیس','GBP',353982.0],['ریال عمان','OMR',702900.0],
+      ['لیر ترکیه','TRY',5342.6],['ریال عربستان','SAR',72071.0],['دینار عراق','IQD',178.49],
+      ['دینار کویت','KWD',868461.0],['یوان چین','CNY',40421.0],['ین ژاپن','JPY',1702.5],
+      ['درهم امارات','AED',73592.0],['فرانک سوئیس','CHF',321667.0]
     ]},
     {name:'رمزارزها', note:'هر واحد رمزارز · میانگین بازارهای ایران', series:2, rows:[
-      ['بیت‌کوین','BTC',16870078190],['اتریوم','ETH',477852456],['تتر','USDT',273232],
-      ['سولانا','SOL',19705946],['ترون','TRX',84932],
-      ['ایکس‌آرپی','XRP',262257],['بی‌ان‌بی','BNB',156512992],['دوج‌کوین','DOGE',15647],['پکس‌گلد','PAXG',972834241]
+      ['بیت‌کوین','BTC',15862147483.5],['اتریوم','ETH',451012118.0],['تتر','USDT',271858],
+      ['سولانا','SOL',18752495.0],['ترون','TRX',82888.33333333333],
+      ['ایکس‌آرپی','XRP',245914.25],['بی‌ان‌بی','BNB',144549338.33333334],['دوج‌کوین','DOGE',14966.333333333334],['پکس‌گلد','PAXG',959417671.5]
     ]},
-    {name:'فلزات', note:'قیمت جهانی × دلار آزاد · اونس تروا و گرم طلای خالص · طلای عیاردار و آب‌شده از بازار ایران · مس و آلومینیوم: میانگین اکتبر ۲۰۲۶، بانک جهانی', series:3, rows:[
-      ['اونس طلا','XAU',gold*dollar],['گرم طلای خالص','XAU/g',gold*dollar/31.1034768],
-      ['اونس نقره','XAG',42.23*dollar],['گرم طلای ۱۸ عیار','18K/g',23957146],
-      ['گرم طلای ۲۴ عیار ایران','24K/g',32381900],['مثقال طلای آب‌شده','',103773000],
-      ['اونس پلاتین','XPT',1301.30*dollar],['اونس پالادیوم','XPD',896*dollar],
-      ['مس، هر تن متریک','',14508*dollar],['آلومینیوم، هر تن متریک','',3061*dollar]
+    {name:'فلزات', note:'قیمت جهانی × دلار آزاد · اونس تروا و گرم طلای خالص · طلای عیاردار و آب‌شده از بازار ایران · مس و آلومینیوم: میانگین اکتبر ۲۰۲۶', series:3, rows:[
+      ['اونس طلا','XAU',955386775.0],['گرم طلای خالص','XAU/g',30716398.078043804],
+      ['اونس نقره','XAG',11099783.55],['گرم طلای ۱۸ عیار','18K/g',23110142.5],
+      ['گرم طلای ۲۴ عیار ایران','24K/g',30812700.0],['مثقال طلای آب‌شده','',100108000.0],
+      ['اونس پلاتین','XPT',348533744.0],['اونس پالادیوم','XPD',241373671.5],
+      ['مس، هر تن متریک','',3921004620.0],['آلومینیوم، هر تن متریک','',827281165.0]
     ]},
-    {name:'انرژی', note:'نفت به‌ازای هر بشکه · قیمت دلاری روز درج‌شده × دلار آزاد ۲۹ آبان', series:4, rows:[
-      ['برنت نقدی','EIA · ۲۶ آبان',92.94*dollar],['WTI نقدی','EIA · ۲۶ آبان',89.53*dollar],
-      ['سبد اوپک','۲۹ آبان',85.86*dollar],['گاز طبیعی هنری هاب، هر میلیون BTU','EIA · ۲۶ آبان',3.10*dollar]
+    {name:'انرژی', note:'نفت به‌ازای هر بشکه · قیمت دلاری روز درج‌شده × دلار آزاد ۳۰ آبان', series:4, rows:[
+      ['برنت نقدی','EIA · ۲۶ آبان',25118429.099999998],['WTI نقدی','EIA · ۲۶ آبان',24196825.45],
+      ['سبد اوپک','۲۹ آبان',23204952.9],['گاز طبیعی هنری هاب، هر میلیون BTU','EIA · ۲۶ آبان',837821.5]
     ]},
     {name:'سکه', note:'هر قطعه · بازار ایران', series:5, rows:[
-      ['سکه امامی','',249795000],['سکه بهار آزادی','',239920000],['نیم‌سکه','',131195000],
-      ['ربع‌سکه','',71325000],['سکه گرمی','',36000000]
+      ['سکه امامی','',239725000.0],['سکه بهار آزادی','',227280000.0],['نیم‌سکه','',126955000.0],
+      ['ربع‌سکه','',67860000.0],['سکه گرمی','',33000000.0]
+    ]},
+    {name:'بورس ایران', note:'قیمت پایانی هر سهم یا واحد صندوق · شاخص‌ها بر حسب واحد شاخص · جلسهٔ ۳۰ آبان ۱۴۰۵', series:6, rows:[
+      ['شاخص کل بورس تهران','TEDPIX',8262713.66,'points'],['شاخص کل هم‌وزن','',2445783.69,'points'],
+      ['فولاد مبارکه','فولاد',485.0],['ملی صنایع مس ایران','فملی',2617.0],
+      ['صنایع پتروشیمی خلیج فارس','فارس',1491.0],['سرمایه‌گذاری تأمین اجتماعی','شستا',350.0],
+      ['صندوق طلای عیار','عیار',63071.0],['صندوق طلای لوتوس','طلا',16222.6]
+    ]},
+    {name:'سهام جهانی', note:'قیمت پایانی هر سهم · دلار آمریکا یا معادل تومان · جلسهٔ ۲۰ نوامبر · ال‌وی‌ام‌اچ با نرخ مرجع یورو/دلار ECB', series:1, rows:[
+      ['اپل','AAPL',92581978.4],['مایکروسافت','MSFT',130948797.8],['انویدیا','NVDA',33926365.45],
+      ['آمازون','AMZN',66706807.3],['آلفابت کلاس A','GOOGL',71698601.85000001],['متا','META',151575422.6],
+      ['تسلا','TSLA',93463042.3],['برکشایر هاتاوی کلاس B','BRK.B',154051050.0],
+      ['ال‌وی‌ام‌اچ','MC.PA',113447260.70824999],['تویوتا (ADR)','TM',56077284.85]
     ]}
   ];
   const english = [
@@ -64,16 +90,20 @@
       ['US dollar','Canadian dollar','Australian dollar','Euro','British pound','Omani rial','Turkish lira','Saudi riyal','Iraqi dinar','Kuwaiti dinar','Chinese yuan','Japanese yen','UAE dirham','Swiss franc']],
     ['Crypto','Per coin or token · Average across Iranian markets',
       ['Bitcoin','Ethereum','Tether','Solana','TRON','XRP','BNB','Dogecoin','PAX Gold']],
-    ['Metals','Global prices × open-market USD · Per troy ounce or gram of pure gold · Karat and melted gold from the Iranian market · Copper and aluminum: World Bank October 2026 averages',
+    ['Metals','Global prices × open-market USD · Per troy ounce or gram of pure gold · Karat and melted gold from the Iranian market · Copper and aluminum: October 2026 averages',
       ['Gold per troy ounce','Pure gold per gram','Silver per troy ounce','18K gold per gram','Iranian 24K gold per gram','Melted gold per mesghal','Platinum per troy ounce','Palladium per troy ounce','Copper per metric ton','Aluminum per metric ton']],
-    ['Energy','Oil per barrel · USD price on the stated date × Nov 20 open-market USD rate',
+    ['Energy','Oil per barrel · USD price on the stated date × Nov 21 open-market USD rate',
       ['Brent spot','WTI spot','OPEC basket','Henry Hub gas per million BTU'],['EIA · Nov 17','EIA · Nov 17','Nov 20','EIA · Nov 17']],
     ['Iranian gold coins','Per coin · Iranian market',
-      ['Emami coin','Bahar Azadi coin','Half coin','Quarter coin','One-gram coin']]
+      ['Emami coin','Bahar Azadi coin','Half coin','Quarter coin','One-gram coin']],
+    ['Iranian equities','Closing price per share or fund unit · Indices in index points · Nov 21, 2026 session',
+      ['Tehran Stock Exchange overall index','Tehran Stock Exchange equal-weight index','Mobarakeh Steel','National Iranian Copper Industries','Persian Gulf Petrochemical Industries','Social Security Investment Company','Ayar Gold Fund','Lotus Gold Fund']],
+    ['Global equities','Closing price per share · US dollars or toman equivalent · Nov 20 session · LVMH uses ECB EUR/USD',
+      ['Apple','Microsoft','NVIDIA','Amazon','Alphabet Class A','Meta','Tesla','Berkshire Hathaway Class B','LVMH (Paris)','Toyota ADR']]
   ];
   const copy = {
-    fa: ['نبض بازار','۴۲ دارایی · بررسی ۳۰ آبان ۱۴۰۵ · نرخ‌آرا: نسخهٔ ۲۹ آبان، ساعت ۱۴:۰۱ تهران','واحد قیمت','تومان','دلار آمریکا','منابع داده','نرخ‌آرا','گروه دارایی','مقایسه قیمت دارایی‌ها','معادل دلاری با نرخ دلار آزاد'],
-    en: ['Market Pulse','42 assets · Checked Nov 21, 2026 · NerkhAra snapshot: Nov 20, 14:01 Tehran','Price unit','Toman','US dollars','Data sources','NerkhAra','Asset class','Asset price comparison','USD equivalent at the open-market rate']
+    fa: ['نبض بازار','۶۰ ردیف · ۳۰ آبان ۱۴۰۵ · نسخهٔ نرخ‌آرا ۱۵:۵۳ تهران','واحد قیمت','تومان','دلار آمریکا','منابع داده','نرخ‌آرا','گروه دارایی','مقایسه قیمت دارایی‌ها','معادل دلاری با نرخ دلار آزاد'],
+    en: ['Market Pulse','60 quotes · Nov 21, 2026 · NerkhAra snapshot 15:53 Tehran','Price unit','Toman','US dollars','Data sources','NerkhAra','Asset class','Asset price comparison','USD equivalent at the open-market rate']
   };
   let language = 'fa';
   function formatPrice(value, showDollars) {
@@ -91,26 +121,95 @@
   const languageButton = root.querySelector('[data-language]');
   const list = root.querySelector('[data-bars]');
   const historyStatus = root.querySelector('[data-history-status]');
+  const historyForm = root.querySelector('[data-history-form]');
+  const historySubmit = root.querySelector('[data-history-submit]');
+  const historyCancel = root.querySelector('[data-history-cancel]');
+  const fields = Object.fromEntries(['range','currency','type','indicator'].map(name => [name,historyForm.elements.namedItem(name)]));
+  const ranges = [7,14,30,60,90,180,365,730,1826,'ytd','all'];
+  let historyAsset = null;
+  let historyTrigger = null;
   let selected = 0;
   let visibleAssets = [];
-  list.addEventListener('click', async event => {
+  function renderHistoryForm() {
+    if (!historyAsset) return;
+    const en = language === 'en';
+    const asset = en ? historyAsset.englishName : historyAsset.localName;
+    root.querySelector('[data-history-title]').textContent = en ? 'Price history · ' + asset : 'نمودار تاریخی · ' + asset;
+    const choices = {
+      range: [en ? 'Range' : 'بازه', ranges.map(range => {
+        if (range === 'all') return [range,en ? 'All available history' : 'همهٔ داده‌های موجود'];
+        if (range === 'ytd') return [range,en ? 'Year to date' : 'از ابتدای سال'];
+        const years = range >= 365;
+        const count = years ? Math.round(range/365) : range;
+        return [range, en ? count + (years ? (count === 1 ? ' year' : ' years') : ' days')
+          : formatPrice(count,false) + (years ? ' سال' : ' روز')];
+      })],
+      currency: [en ? 'Currency' : 'واحد', [['toman',en ? 'Toman' : 'تومان'],['usd',en ? 'US dollars' : 'دلار آمریکا']]],
+      type: [en ? 'Chart type' : 'نوع نمودار', [['line',en ? 'Line' : 'خطی'],['candles',en ? 'Candles when available' : 'کندل در صورت وجود داده']]],
+      indicator: [en ? 'Indicator' : 'اندیکاتور', [['none',en ? 'None' : 'بدون اندیکاتور'],['sma20','SMA 20'],['sma50','SMA 50'],['rsi','RSI 14']]]
+    };
+    if (historyAsset.points) choices.currency[1] = [['points',en ? 'Index points' : 'واحد شاخص']];
+    for (const [name,[label,entries]] of Object.entries(choices)) {
+      const field = fields[name];
+      const previous = field.value;
+      root.querySelector('[data-history-label="' + name + '"]').textContent = label;
+      field.replaceChildren(...entries.map(([id,text]) => new Option(text,String(id))));
+      if (entries.some(([id]) => String(id) === previous)) field.value = previous;
+    }
+    historySubmit.textContent = en ? 'Show chart and analysis' : 'نمایش نمودار و تحلیل';
+    historyCancel.textContent = en ? 'Cancel' : 'انصراف';
+  }
+  list.addEventListener('click', event => {
     const button = event.target.closest('button[data-history]');
     if (!button || !window.openai?.sendFollowUpMessage) return;
-    const { localName, englishName, category } = visibleAssets[Number(button.dataset.history)];
-    const isEnglish = language === 'en';
-    const asset = isEnglish ? englishName : localName;
-    const currency = unit.value === 'usd' ? (isEnglish ? 'US dollars' : 'دلار آمریکا') : (isEnglish ? 'toman' : 'تومان');
-    const title = isEnglish ? 'Price history for ' + asset : 'نمودار تاریخی ' + asset;
-    const prompt = isEnglish
-      ? '$codex-chand Show the interactive 90-day historical price chart for ' + asset + ' (' + category + ') in ' + currency + '. Use English, keep the range and technical indicator controls, and include the detailed technical analysis specified by the skill.'
-      : '$codex-chand نمودار تعاملی تاریخی «' + asset + '» (' + englishName + '؛ ' + category + ') در ۹۰ روز اخیر به ' + currency + ' را به فارسی نشان بده. انتخاب بازه و اندیکاتورها را هم بگذار و تحلیل تکنیکال جزئی را طبق راهنمای مهارت بنویس.';
+    historyAsset = visibleAssets[Number(button.dataset.history)];
+    historyTrigger = button;
+    button.closest('li').querySelector('[data-history-slot]').append(historyForm);
+    list.querySelector('[aria-expanded="true"]')?.setAttribute('aria-expanded','false');
+    button.setAttribute('aria-expanded','true');
+    renderHistoryForm();
+    fields.range.value = '90';
+    fields.currency.value = historyAsset.points ? 'points' : unit.value;
+    fields.type.value = 'line';
+    fields.indicator.value = 'none';
+    historyStatus.textContent = '';
+    historyForm.hidden = false;
+    fields.range.focus();
+  });
+  function closeHistoryForm() {
+    historyForm.hidden = true;
+    historyAsset = null;
+    historyStatus.textContent = '';
+    if (historyTrigger?.isConnected) {
+      historyTrigger.setAttribute('aria-expanded','false');
+      historyTrigger.focus();
+    }
+  }
+  historyCancel.addEventListener('click', closeHistoryForm);
+  historyForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (!historyAsset || historySubmit.disabled) return;
+    const { localName, englishName, category } = historyAsset;
+    const en = language === 'en';
+    const asset = en ? englishName : localName;
+    const title = en ? 'Price history for ' + asset : 'نمودار تاریخی ' + asset;
+    const label = name => fields[name].selectedOptions[0].text;
+    const range = label('range');
+    const currency = label('currency');
+    const chartType = label('type');
+    const indicator = label('indicator');
+    const prompt = en
+      ? '$codex-chand Show interactive historical prices and detailed technical analysis for ' + asset + ' (' + category + ') in English. Use ' + range + ', ' + currency + ', chart type: ' + chartType + ', and initial indicator: ' + indicator + '. If candles are unavailable, show a labeled line chart. Base the written analysis on the opening selection. Render the historical chart in fixed view (fixedView: true) with no settings menu.'
+      : '$codex-chand نمودار تاریخی تعاملی «' + asset + '» (' + englishName + '؛ ' + category + ') را به فارسی نشان بده. بازه: ' + range + '؛ واحد: ' + currency + '؛ نوع نمودار: ' + chartType + '؛ اندیکاتور اولیه: ' + indicator + '. اگر دادهٔ کندل موجود نیست، نمودار خطی با برچسب نشان بده. تحلیل تکنیکال جزئی را بر اساس همین بازه و واحد بنویس. نمودار را در حالت ثابت (fixedView: true)، بدون منوی تنظیمات، نشان بده.';
+    historyStatus.textContent = '';
+    historySubmit.disabled = true;
     try {
-      historyStatus.textContent = '';
       await window.openai.sendFollowUpMessage({ prompt, title });
+      if (historyAsset?.englishName === englishName && historyAsset.category === category) closeHistoryForm();
     } catch {
-      historyStatus.textContent = language === 'en'
-        ? 'Could not open price history. Try the asset name with a date range in chat.'
-        : 'نمودار باز نشد. نام دارایی و بازه را در چت وارد کن.';
+      historyStatus.textContent = language === 'en' ? 'Could not open price history. Try again.' : 'نمودار باز نشد. دوباره امتحان کن.';
+    } finally {
+      historySubmit.disabled = false;
     }
   });
   const buttons = groups.map((group, index) => {
@@ -123,6 +222,7 @@
     return button;
   });
   function render() {
+    renderHistoryForm();
     const isEnglish = language === 'en';
     const [title,date,unitLabel,tomanLabel,dollarLabel,sources,provider,groupLabel,chartLabel,usdNote] = copy[language];
     root.lang = language;
@@ -142,15 +242,19 @@
     const [englishName, englishNote, englishRows, englishCodes] = english[selected];
     const showDollars = unit.value === 'usd';
     const label = showDollars ? dollarLabel : tomanLabel;
-    const rows = group.rows.map(([name,code,price], index) => [
+    const rows = group.rows.map(([name,code,price,basis], index) => [
       isEnglish ? englishRows[index] : name,
       isEnglish && englishCodes ? englishCodes[index] : code,
       price,
-      { localName:name, englishName:englishRows[index], category:englishName }
+      { localName:name, englishName:englishRows[index], category:englishName, points:basis === 'points' }
     ]).sort((a,b) => b[2]-a[2]);
     visibleAssets = rows.map(row => row[3]);
     const canOpenHistory = typeof window.openai?.sendFollowUpMessage === 'function';
-    const max = rows[0][2];
+    const maxima = {points:0,prices:0};
+    for (const [, , price, asset] of rows) {
+      const key = asset.points ? 'points' : 'prices';
+      maxima[key] = Math.max(maxima[key],price || 0);
+    }
     root.querySelector('#market-heading').textContent = (isEnglish ? englishName : group.name) + ' · ' + label;
     root.querySelector('[data-caption]').textContent = (isEnglish ? englishNote : group.note) + (showDollars ? ' · ' + usdNote : '');
     buttons.forEach((button,index) => {
@@ -158,17 +262,32 @@
       button.setAttribute('aria-pressed', String(index === selected));
     });
     list.style.setProperty('--series', 'var(--viz-series-' + group.series + ', var(--primary))');
-    list.innerHTML = rows.map(([name,code,price],index) => {
-      const value = price === null ? (isEnglish ? 'Unavailable' : 'ناموجود') : formatPrice(showDollars ? price / dollar : price, showDollars);
+    if (historyForm.parentElement?.hasAttribute('data-history-slot')) list.before(historyForm);
+    list.innerHTML = rows.map(([name,code,price,asset],index) => {
+      const max = maxima[asset.points ? 'points' : 'prices'];
+      const value = price === null ? (isEnglish ? 'Unavailable' : 'ناموجود') : formatPrice(showDollars && !asset.points ? price / dollar : price, showDollars && !asset.points) + (asset.points ? (isEnglish ? ' points' : ' واحد') : '');
       const assetLabel = canOpenHistory
-        ? '<button type="button" class="btn btn-ghost" data-history="' + index + '" aria-label="' +
+        ? '<button type="button" class="btn btn-ghost" data-history="' + index + '" aria-expanded="false" aria-controls="chand-history-settings" aria-label="' +
           (isEnglish ? 'Price history for ' : 'نمودار تاریخی ') + name + '">' + name + '</button>'
         : name;
       return '<li><div class="quote"><span>' + assetLabel + ' <bdi class="text-small">' + code +
         '</bdi></span><span dir="ltr" class="tabular-nums">' + value +
-        '</span></div><div class="track" aria-hidden="true"><span class="bar" style="width:' +
+        '</span></div>' + (canOpenHistory ? '<div data-history-slot></div>' : '') +
+        '<div class="track" aria-hidden="true"><span class="bar" style="width:' +
         (price === null || !max ? 0 : price/max*100) + '%"></span></div></li>';
     }).join('');
+    if (historyAsset) {
+      const index = visibleAssets.findIndex(asset =>
+        asset.englishName === historyAsset.englishName && asset.category === historyAsset.category);
+      const trigger = list.querySelector('button[data-history="' + index + '"]');
+      if (trigger) {
+        historyTrigger = trigger;
+        trigger.setAttribute('aria-expanded','true');
+        trigger.closest('li').querySelector('[data-history-slot]').append(historyForm);
+      } else {
+        closeHistoryForm();
+      }
+    }
   }
   unit.addEventListener('change', render);
   languageButton.addEventListener('click', () => {
