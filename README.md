@@ -1,6 +1,6 @@
 # Codex Chand | کدکس چند
 
-Codex Chand is a bilingual Codex skill for checking Tehran open-market exchange rates, cryptocurrencies, Iranian gold coins, metals, and energy benchmarks. Ask for one asset to get a one-line quote in toman and US dollars, or invoke the skill by itself to see the full watchlist.
+Codex Chand is a bilingual Codex skill for checking Tehran open-market exchange rates, cryptocurrencies, Iranian gold coins, metals, and energy benchmarks. Ask for one asset to get a one-line quote in toman and US dollars, or invoke the skill by itself to see the full watchlist. Add a date range to explore price history and technical indicators.
 
 ## Dashboard screenshots
 
@@ -35,8 +35,19 @@ If you already have a `codex-chand` folder, review or back up your local copy be
 | `$codex-chand طلای ۱۸ عیار` | Iranian 18-karat gold price per gram in toman and US dollars |
 | `$codex-chand سکه امامی` | Iranian Emami gold coin price per coin in toman and US dollars |
 | `$codex-chand Brent` | Brent spot price per barrel with the observation date when delayed |
+| `$codex-chand بیت‌کوین، ۱۸۰ روز اخیر به تومان، با RSI` | Bitcoin history in toman with RSI selected |
 
 Single-asset replies use the language of the request. In the dashboard, switch between Persian and English or between toman and US dollars. The language toggle updates labels, dates, number formatting, and reading direction while preserving the selected category and currency.
+
+## Historical charts
+
+Click an asset name in the interactive Codex dashboard and confirm the follow-up to open its price history. The chart starts at 90 days and uses the dashboard's selected language and currency where data is available. You can also request a chart by typing an asset and a date range.
+
+- **Ranges** — 7, 14, 30, 60, 90, or 180 days, 1, 2, or 5 years, year to date, all available data, or custom start and end dates. Coverage depends on the source and asset.
+- **Chart types** — Line charts for sampled prices or averages. Candles are available when the series has verified open, high, low, and close values.
+- **Indicators** — 20- and 50-period simple moving averages and 14-period Wilder RSI with 30 and 70 reference levels.
+- **Range statistics** — Return, high and low, drawdown from the period high, and maximum peak-to-trough drawdown.
+- **Historical currency conversion** — Toman and USD views use verified exchange rates from matching historical dates or periods when conversion data is available.
 
 ## Supported assets
 
