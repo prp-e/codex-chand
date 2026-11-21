@@ -4,7 +4,7 @@
 
 Run `$codex-chand` for the 42-quote dashboard, add an asset for a one-line quote, or add a date range to explore price history. Quotes are available in toman and US dollars where source coverage permits.
 
-[Install](#install) · [Usage](#usage) · [Historical charts](#historical-charts) · [Supported assets](#supported-assets)
+[فارسی](README-fa.md) · [Install](#install) · [Usage](#usage) · [Historical charts](#historical-charts) · [Supported assets](#supported-assets)
 
 ## Screenshots
 
