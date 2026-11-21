@@ -2,7 +2,7 @@
 
 **Tehran market quotes, historical charts, and technical analysis in Persian and English.**
 
-Run `$codex-chand` for the 42-quote dashboard, add an asset for a one-line quote, or add a date range to explore price history. Quotes are available in toman and US dollars where source coverage permits.
+Run `$codex-chand` for the 60-quote dashboard, add an asset for a one-line quote, or add a date range to explore price history. Quotes are available in toman and US dollars where source coverage permits.
 
 [فارسی](README-fa.md) · [Install](#install) · [Usage](#usage) · [Historical charts](#historical-charts) · [Supported assets](#supported-assets)
 
@@ -70,7 +70,7 @@ The result keeps the selected settings and includes an observation scrubber. The
 
 ## Supported assets
 
-The dashboard includes 42 default quotes. Dubai crude is available on request as a monthly benchmark.
+The dashboard includes 60 default quotes. Dubai crude is available on request as a monthly benchmark.
 
 | Category | Asset or benchmark | Quote basis | Availability |
 | --- | --- | --- | --- |
@@ -117,6 +117,24 @@ The dashboard includes 42 default quotes. Dubai crude is available on request as
 | Energy | OPEC Reference Basket | 1 barrel | Default |
 | Energy | Henry Hub spot natural gas | 1 million BTU | Default |
 | Energy | Dubai crude | 1 barrel (monthly average) | On request |
+| Iranian equities | Tehran Stock Exchange overall index (`TEDPIX`) | Index points | Default |
+| Iranian equities | Tehran Stock Exchange equal-weight index | Index points | Default |
+| Iranian equities | Mobarakeh Steel (`فولاد`) | 1 share | Default |
+| Iranian equities | National Iranian Copper Industries (`فملی`) | 1 share | Default |
+| Iranian equities | Persian Gulf Petrochemical Industries (`فارس`) | 1 share | Default |
+| Iranian equities | Social Security Investment Company (`شستا`) | 1 share | Default |
+| Iranian equities | Ayar Gold Fund (`عیار`) | 1 fund unit | Default |
+| Iranian equities | Lotus Gold Fund (`طلا`) | 1 fund unit | Default |
+| Global equities | Apple (`AAPL`) | 1 share | Default |
+| Global equities | Microsoft (`MSFT`) | 1 share | Default |
+| Global equities | NVIDIA (`NVDA`) | 1 share | Default |
+| Global equities | Amazon (`AMZN`) | 1 share | Default |
+| Global equities | Alphabet Class A (`GOOGL`) | 1 share | Default |
+| Global equities | Meta Platforms (`META`) | 1 share | Default |
+| Global equities | Tesla (`TSLA`) | 1 share | Default |
+| Global equities | Berkshire Hathaway Class B (`BRK.B`) | 1 share | Default |
+| Global equities | LVMH, Paris (`MC.PA`) | 1 share | Default |
+| Global equities | Toyota ADR (`TM`) | 1 ADR | Default |
 
 ## Data and conversions
 
@@ -127,6 +145,8 @@ The dashboard includes 42 default quotes. Dubai crude is available on request as
 
 The source notes document providers, quote units, timestamps, and alternatives. Availability depends on Codex's network access and the providers. Some optional sources require credentials. Keep credentials out of the dashboard HTML and repository. [Market data sources](sources.md)
 
+Stock and fund quotes use the latest verified session close. Indices remain in index points in either currency view. The Paris LVMH listing is quoted in EUR and converted using the reference rate for that session.
+
 ## Repository contents
 
 | File | Purpose |
@@ -135,6 +155,6 @@ The source notes document providers, quote units, timestamps, and alternatives. 
 | [history.md](history.md) | Historical data selection, chart controls, and technical analysis |
 | [assets/history.html](assets/history.html) | Interactive historical chart template |
 | [sources.md](sources.md) | Provider documentation and guidance on selecting and validating observations |
-| [assets/market-prices.html](assets/market-prices.html) | Interactive dashboard fragment containing a dated 42-row example checked on November 21, 2026 |
+| [assets/market-prices.html](assets/market-prices.html) | Interactive dashboard fragment containing a dated 60-row example checked on November 21, 2026 |
 
 The template shows an embedded snapshot. To refresh it, Codex replaces the observations, dates in both languages, captions, and source links. For a standalone browser export, ask Codex to wrap the fragment in a complete HTML document and supply the hosting styles and theme variables it needs.
