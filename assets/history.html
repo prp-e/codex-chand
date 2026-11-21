@@ -1,0 +1,175 @@
+<section id="chand-history" lang="fa" dir="rtl">
+  <h1 data-title></h1>
+  <div class="viz-row">
+    <button class="btn" type="button" data-lang>English</button>
+    <label><span data-range-label></span> <select class="form-select" data-range></select></label>
+    <label><span data-unit-label></span> <select class="form-select" data-unit></select></label>
+    <label><span data-type-label></span> <select class="form-select" data-type></select></label>
+    <label><span data-overlay-label></span> <select class="form-select" data-overlay></select></label>
+  </div>
+  <p class="text-small" data-source></p>
+  <p aria-live="polite" data-summary></p>
+  <div data-plot></div>
+  <label><span data-point-label></span> <input class="form-range" data-point type="range" min="0" value="0"></label>
+  <p class="tabular-nums" data-detail></p>
+</section>
+<style>
+#chand-history {display:grid;gap:.65rem;color:var(--foreground)}
+#chand-history svg {display:block;width:100%;height:16rem;overflow:hidden}
+#chand-history [data-plot] {direction:ltr}
+#chand-history [data-point] {width:100%}
+</style>
+<script>
+(() => {
+  const root = document.getElementById('chand-history');
+  const q = key => root.querySelector('[data-' + key + ']');
+  const data = /* HISTORY_DATA_START */ null /* HISTORY_DATA_END */;
+  if (!data) {
+    q('title').textContent = 'دادهٔ تاریخی در دسترس نیست';
+    return;
+  }
+  const words = {
+    fa: ['بازه','واحد','نمودار','اندیکاتور','مشاهده','تومان','دلار آمریکا','خطی','کندل','بدون اندیکاتور','همه','روز','سال','از ابتدای سال','بازده','افت از سقف','بیشترین افت','پوشش','داده کافی نیست','سقف / کف بازه','شروع / سقف / کف / پایان','بازهٔ درخواستی'],
+    en: ['Range','Currency','Chart','Indicator','Observation','Toman','US dollars','Line','Candles','None','All','days','years','Year to date','Return','Drawdown','Max drawdown','Coverage','Insufficient data','Range high / low','Open / high / low / close','Requested dates']
+  };
+  const intervals = [7,14,30,60,90,180,365,730,1826,'ytd','all'];
+  const day = 86400000;
+  let lang = 'fa';
+  const range = q('range');
+  const unit = q('unit');
+  const type = q('type');
+  const overlay = q('overlay');
+  const point = q('point');
+  function options(select, entries, preferred) {
+    const previous = select.value || preferred;
+    select.replaceChildren(...entries.map(([value,label]) => new Option(label,value)));
+    if (entries.some(([value]) => String(value) === previous)) select.value = previous;
+  }
+  function number(value, digits = 2) {
+    if (!Number.isFinite(value)) return '—';
+    return new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : 'en-US', {maximumFractionDigits:digits})
+      .formatToParts(value).map(p => p.type === 'decimal' ? '.' : lang === 'fa' && p.type === 'group' ? '٫' : p.value).join('');
+  }
+  function date(value) {
+    return new Intl.DateTimeFormat(lang === 'fa' ? 'fa-IR' : 'en-GB', {
+      timeZone:'UTC', year:'numeric', month:'short', ...(data.frequency === 'monthly' ? {} : {day:'numeric'})
+    }).format(value);
+  }
+  function indicators(rows) {
+    let gain = 0, loss = 0, changes = 0;
+    return rows.map((row,i) => {
+      if (!row) {
+        gain = loss = changes = 0;
+        return null;
+      }
+      const previous = rows[i-1];
+      const change = previous ? row.close - previous.close : 0;
+      if (previous) changes++;
+      const weight = changes <= 14 ? 1 : 13/14;
+      gain = Math.max(change,0) + gain * weight;
+      loss = Math.max(-change,0) + loss * weight;
+      const window = length => rows.slice(Math.max(0,i-length+1),i+1);
+      const sma = length => {
+        const values = window(length);
+        return values.length === length && values.every(Boolean) ? values.reduce((sum,p) => sum+p.close,0)/length : null;
+      };
+      return {...row, sma20:sma(20), sma50:sma(50),
+        rsi:changes >= 14 ? (loss ? 100-100/(1+gain/loss) : gain ? 100 : 50) : null};
+    });
+  }
+  function draw(rows, stamps, field, candles) {
+    const actual = rows.filter(Boolean);
+    const values = actual.flatMap(r => field === 'rsi' ? [r.rsi] : [r.close,candles ? r.high : null,candles ? r.low : null,r[field]]).filter(Number.isFinite);
+    if (!values.length) return '';
+    const low = field === 'rsi' ? 0 : Math.min(...values);
+    const high = field === 'rsi' ? 100 : Math.max(...values);
+    const x = i => 14+692*(stamps[i]-stamps[0])/Math.max(1,stamps.at(-1)-stamps[0]);
+    const y = v => high === low ? 84 : 152-136*(v-low)/(high-low);
+    const rectWidth = Math.max(1,Math.min(12,510/rows.length));
+    const path = key => rows.reduce((state,r,i) => {
+      const value = r?.[key];
+      if (!Number.isFinite(value)) return {d:state.d,pen:false};
+      return {d:state.d+(state.pen?' L':' M')+x(i)+' '+y(value),pen:true};
+    },{d:'',pen:false}).d;
+    const guides = field === 'rsi' ? [30,70] : [low,high];
+    const grid = guides.map(v => '<path stroke="var(--border)" d="M14 '+y(v)+'H706"/>').join('');
+    const line = (key,color) => '<path fill="none" stroke="var('+color+')" stroke-width="1.6" d="'+path(key)+'"/>';
+    const marks = candles ? rows.map((r,i) => {
+      if (!r) return '';
+      const color = r.close >= r.open ? 'var(--green)' : 'var(--red)';
+      return '<path stroke="'+color+'" d="M'+x(i)+' '+y(r.high)+'V'+y(r.low)+'"/><rect fill="'+color+'" x="'+(x(i)-rectWidth/2)+'" y="'+Math.min(y(r.open),y(r.close))+'" width="'+rectWidth+'" height="'+Math.max(1,Math.abs(y(r.open)-y(r.close)))+'"/>';
+    }).join('') : line(field === 'rsi' ? 'rsi' : 'close','--viz-series-1');
+    return '<svg role="img" aria-label="'+(field === 'rsi' ? 'RSI 14 · 30 / 70' : words[lang][2])+'" viewBox="0 0 720 168" preserveAspectRatio="none">'+grid+marks+(field.startsWith('sma') ? line(field,'--viz-series-2') : '')+'</svg>';
+  }
+  function render() {
+    const w = words[lang];
+    root.lang = lang;
+    root.dir = lang === 'fa' ? 'rtl' : 'ltr';
+    q('lang').textContent = lang === 'fa' ? 'English' : 'فارسی';
+    q('title').textContent = data.title[lang];
+    ['range','unit','type','overlay','point'].forEach((key,i) => q(key+'-label').textContent=w[i]);
+    const presets = intervals.map(v => [v,v==='all'?w[10]:v==='ytd'?w[13]:v>=365?number(Math.round(v/365),0)+' '+w[12]:number(v,0)+' '+w[11]]);
+    if (data.span) presets.unshift(['custom',w[21]]);
+    options(range,presets,String(data.span ? 'custom' : data.range || 90));
+    options(unit,Object.keys(data.series).map(key=>[key,key==='toman'?w[5]:w[6]]),data.unit || 'toman');
+    const series = data.series[unit.value];
+    const dated = series.rows.map(([stamp,close,o,h,l]) => ({time:Date.parse(stamp),close,open:o,high:h,low:l}));
+    const hasOHLC = series.ohlc === true && dated.filter(r=>Number.isFinite(r.close)).every(r=>[r.open,r.high,r.low].every(Number.isFinite));
+    options(type,hasOHLC ? [['line',w[7]],['candles',w[8]]] : [['line',w[7]]],data.type || 'line');
+    options(overlay,[['none',w[9]],['sma20','SMA 20'],['sma50','SMA 50'],['rsi','RSI 14']],data.overlay || 'none');
+    const last = dated.at(-1)?.time;
+    const anchor = Date.parse(data.asOf);
+    const year = anchor ? new Date(anchor).getUTCFullYear() : new Date(last).getUTCFullYear();
+    const custom = range.value === 'custom';
+    const cutoff = custom ? Date.parse(data.span[0]) : range.value === 'all' ? -Infinity : range.value === 'ytd' ? Date.UTC(year,0,1) : (anchor || last)-(Number(range.value)-1)*day;
+    const computed = indicators(dated.map(r=>Number.isFinite(r.close) ? r : null));
+    const upper = custom ? Date.parse(data.span[1]) : Infinity;
+    const visible = r => r.time >= cutoff && r.time <= upper;
+    const stamps = dated.filter(visible).map(r=>r.time);
+    const rows = computed.filter((_,i)=>visible(dated[i]));
+    const available = rows.filter(Boolean);
+    const first = available[0];
+    const end = available.at(-1);
+    const pct = v => number(v)+(lang==='fa'?'٪':'%');
+    const link = document.createElement('a');
+    link.href = series.source;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = series.provider;
+    q('source').replaceChildren(link, ' · '+series.basis[lang]+(first ? ' · '+w[17]+' '+date(first.time)+' — '+date(end.time) : ''));
+    let peak = 0, worst = 0;
+    for (const row of available) {
+      peak = Math.max(peak,row.close);
+      worst = Math.min(worst,row.close/peak-1);
+    }
+    const candles = type.value === 'candles';
+    const high = Math.max(...available.map(r=>candles?r.high:r.close));
+    const low = Math.min(...available.map(r=>candles?r.low:r.close));
+    q('summary').textContent = first ? [
+      w[14]+' '+(available.length>1?pct((end.close/first.close-1)*100):'—'),
+      w[19]+' '+number(high,unit.value==='toman'?0:4)+' / '+number(low,unit.value==='toman'?0:4),
+      w[15]+' '+pct((end.close/peak-1)*100),
+      w[16]+' '+pct(worst*100)
+    ].join(' · ') : w[18];
+    const field = overlay.value;
+    q('plot').innerHTML = available.length ? draw(rows,stamps,field==='rsi'?'none':field,candles)+(field==='rsi'?draw(rows,stamps,'rsi',false):'') : '';
+    point.disabled = !available.length;
+    point.max = Math.max(0,available.length-1);
+    point.value = point.max;
+    function detail() {
+      const r = available[point.value];
+      const digits = unit.value==='toman'?0:6;
+      q('detail').textContent = !r?'':[
+        date(r.time),
+        candles?w[20]+' '+[r.open,r.high,r.low,r.close].map(v=>number(v,digits)).join(' / '):number(r.close,digits)+' '+w[unit.value==='toman'?5:6],
+        field==='none'?'':overlay.selectedOptions[0].text+' '+number(r[field],digits)
+      ].filter(Boolean).join(' · ');
+    }
+    point.oninput = detail;
+    detail();
+  }
+  for (const control of [range,unit,type,overlay]) control.onchange = render;
+  q('lang').onclick = () => { lang = lang==='fa'?'en':'fa'; render(); };
+  render();
+})();
+</script>

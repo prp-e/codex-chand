@@ -8,6 +8,7 @@
     <h2 id="market-heading"></h2>
     <p class="text-small text-muted" data-caption></p>
     <ol aria-live="polite" data-bars aria-label="مقایسه قیمت دارایی‌ها"></ol>
+    <p class="text-small" data-history-status role="status"></p>
   </section>
   <footer class="text-small text-muted"><span data-sources>منابع داده</span> <a href="https://nerkhara.com/en/" target="_blank" rel="noopener" data-provider>نرخ‌آرا</a> · <a href="https://www.eia.gov/dnav/pet/hist/rbrted.htm" target="_blank" rel="noopener">EIA · Brent</a> · <a href="https://www.eia.gov/dnav/pet/hist/rwtcd.htm" target="_blank" rel="noopener">EIA · WTI</a> · <a href="https://www.eia.gov/dnav/ng/hist/rngwhhdd.htm" target="_blank" rel="noopener">EIA · Henry Hub</a> · <a href="https://thedocs.worldbank.org/en/doc/74e8be41ceb20fa0da750cda2f6b9e4e-0050012026/related/CMO-Pink-Sheet-November-2026.pdf" target="_blank" rel="noopener">Pink Sheet</a></footer>
 </section>
@@ -89,7 +90,29 @@
   const unit = root.querySelector('[data-unit]');
   const languageButton = root.querySelector('[data-language]');
   const list = root.querySelector('[data-bars]');
+  const historyStatus = root.querySelector('[data-history-status]');
   let selected = 0;
+  let visibleAssets = [];
+  list.addEventListener('click', async event => {
+    const button = event.target.closest('button[data-history]');
+    if (!button || !window.openai?.sendFollowUpMessage) return;
+    const { localName, englishName, category } = visibleAssets[Number(button.dataset.history)];
+    const isEnglish = language === 'en';
+    const asset = isEnglish ? englishName : localName;
+    const currency = unit.value === 'usd' ? (isEnglish ? 'US dollars' : 'دلار آمریکا') : (isEnglish ? 'toman' : 'تومان');
+    const title = isEnglish ? 'Price history for ' + asset : 'نمودار تاریخی ' + asset;
+    const prompt = isEnglish
+      ? '$codex-chand Show the interactive 90-day historical price chart for ' + asset + ' (' + category + ') in ' + currency + '. Use English, keep the range and technical indicator controls, and include the detailed technical analysis specified by the skill.'
+      : '$codex-chand نمودار تعاملی تاریخی «' + asset + '» (' + englishName + '؛ ' + category + ') در ۹۰ روز اخیر به ' + currency + ' را به فارسی نشان بده. انتخاب بازه و اندیکاتورها را هم بگذار و تحلیل تکنیکال جزئی را طبق راهنمای مهارت بنویس.';
+    try {
+      historyStatus.textContent = '';
+      await window.openai.sendFollowUpMessage({ prompt, title });
+    } catch {
+      historyStatus.textContent = language === 'en'
+        ? 'Could not open price history. Try the asset name with a date range in chat.'
+        : 'نمودار باز نشد. نام دارایی و بازه را در چت وارد کن.';
+    }
+  });
   const buttons = groups.map((group, index) => {
     const button = document.createElement('button');
     button.type = 'button';
@@ -122,8 +145,11 @@
     const rows = group.rows.map(([name,code,price], index) => [
       isEnglish ? englishRows[index] : name,
       isEnglish && englishCodes ? englishCodes[index] : code,
-      price
+      price,
+      { localName:name, englishName:englishRows[index], category:englishName }
     ]).sort((a,b) => b[2]-a[2]);
+    visibleAssets = rows.map(row => row[3]);
+    const canOpenHistory = typeof window.openai?.sendFollowUpMessage === 'function';
     const max = rows[0][2];
     root.querySelector('#market-heading').textContent = (isEnglish ? englishName : group.name) + ' · ' + label;
     root.querySelector('[data-caption]').textContent = (isEnglish ? englishNote : group.note) + (showDollars ? ' · ' + usdNote : '');
@@ -132,9 +158,13 @@
       button.setAttribute('aria-pressed', String(index === selected));
     });
     list.style.setProperty('--series', 'var(--viz-series-' + group.series + ', var(--primary))');
-    list.innerHTML = rows.map(([name,code,price]) => {
+    list.innerHTML = rows.map(([name,code,price],index) => {
       const value = price === null ? (isEnglish ? 'Unavailable' : 'ناموجود') : formatPrice(showDollars ? price / dollar : price, showDollars);
-      return '<li><div class="quote"><span>' + name + ' <bdi class="text-small">' + code +
+      const assetLabel = canOpenHistory
+        ? '<button type="button" class="btn btn-ghost" data-history="' + index + '" aria-label="' +
+          (isEnglish ? 'Price history for ' : 'نمودار تاریخی ') + name + '">' + name + '</button>'
+        : name;
+      return '<li><div class="quote"><span>' + assetLabel + ' <bdi class="text-small">' + code +
         '</bdi></span><span dir="ltr" class="tabular-nums">' + value +
         '</span></div><div class="track" aria-hidden="true"><span class="bar" style="width:' +
         (price === null || !max ? 0 : price/max*100) + '%"></span></div></li>';

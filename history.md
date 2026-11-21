@@ -1,0 +1,32 @@
+# Historical prices
+
+Accept natural-language time ranges, explicit date spans, chart type, currency, and indicator preferences. Default to the last 90 days. Offer 7, 14, 30, 60, 90, and 180 days, 1, 2, and 5 years, year to date, and all available observations. For a custom span, set the initial view to the requested dates and use the closest chart preset only if explicitly identified. Use the user's calendar when interpreting dates, and keep provider timestamps and session boundaries intact.
+
+## Observations
+
+- [NerkhAra history API](https://nerkhara.com/en/api/) exposes `history/{id}.json` and `history/{id}.csv`. Inspect the series unit and actual coverage. The provider's standard daily history is a mean of readings within each UTC day. Today's point can be partial. Label the series as daily averages. For candles, inspect the asset page for separately published daily OHLC, whose buckets may follow Tehran days. For local crypto, prefer exchange OHLC for the exact local pair when available. [NerkhAra history methodology](https://nerkhara.com/en/data/) · [Nobitex market documentation](https://github.com/nobitex/docs-api/blob/master/source/includes/_market_data.md)
+- Use EIA daily spot history for Brent, WTI, and Henry Hub. Use World Bank Pink Sheet monthly history for copper, aluminum, and Dubai. Use documented benchmark histories for OPEC basket and precious metals, and identify the session or series used. Use the globally quoted series and documented quote currency when local history is unavailable. [Source notes](sources.md)
+- Keep the same provider, benchmark definition, frequency, and quote basis across an individual series. Sort and deduplicate by period, omit or label incomplete periods, and show coverage. Preserve nontrading days as elapsed time. Use null at genuinely missing expected observations so plots and indicators break across gaps. Monthly series stay monthly.
+- Build historical equivalents with verified open-market USD/toman rates from the same observation day, or an aligned period average for monthly observations, labeled as a conversion of period averages. Join only matching periods and identify the FX provider and method in the caption. If conversion coverage is partial, show the overlap and preserve gaps. Only use candles in a converted series when its OHLC was calculated from aligned intraperiod observations. USDT-denominated history requires corresponding USDT conversion data. A daily average, a sampled reference price, or a synthetic close sequence cannot stand in for actual OHLC.
+
+## Interactive chart
+
+Adapt [history.html](assets/history.html) and use the inline visualization surface. Replace the null between the HISTORY_DATA markers with a safely serialized JSON object (escape literal less-than characters in data embedded in a script). Fields:
+
+- `title` and each series' `basis` contain `fa` and `en` strings. Include the sampling basis, source and FX conversion basis where relevant. Set `frequency` to `daily` or `monthly`, `asOf` to the ISO date anchoring the range selectors, `range` to the initial preset (90 by default), and `unit` when requested. Set `type` to `candles` or `line` and `overlay` to `sma20`, `sma50`, `rsi`, or `none` if requested.
+- `series` maps `toman` and/or `usd` to `{provider, source, basis, ohlc, rows}`. Use a verified HTTPS source URL. Rows are chronological `[ISO date, value]` or `[ISO date, close, open, high, low]` with finite positive prices. Set `ohlc: true` only for observed candles. Use `[ISO date, null]` for genuine gaps. If the selected series has only one usable currency, show it by itself and identify the unavailable currency when requested.
+- For an explicit span, set `span` to the two inclusive ISO dates and fetch earlier observations for indicator warm-up. For long histories, retain sufficient history for indicator calculation and summarize or reduce display density as needed, while preserving gaps, extremes and original timestamps. When a source is unavailable, show a dated fallback with its own coverage or report what could not be verified.
+
+Show period return, range high and low, latest drawdown from the selected period's peak, and maximum peak-to-trough drawdown. On line charts these are based on the sampled values. Include 20- and 50-period simple moving averages and 14-period Wilder RSI with 30/70 reference levels. Periods are observations at the actual sampling frequency. Preserve warm-up before the visible range. Verify range, language, currency, and chart-type controls against the embedded series before delivery.
+
+
+## Written technical analysis
+
+Opening history from a dashboard asset button includes written analysis below the chart. Apply this also to direct requests for technical analysis. Use the same asset, currency, source, frequency, and initial date range as the chart. Base calculations on the plotted series and its warm-up observations. Prefer the latest completed period for indicator readings and identify its date if the chart also includes a partial period. Identify daily averages or closes as the input basis.
+
+- **Trend and drawdown.** Give the period return and dated high and low. Explain the latest completed price relative to the period high and quantify the maximum peak-to-trough drawdown, with peak and trough dates when available.
+- **Moving averages.** Give the latest SMA 20 and SMA 50 values when enough observations exist, the price's position relative to each, and a recent crossover date only if confirmed by consecutive readings.
+- **Momentum.** Give Wilder RSI 14 and its date. Describe its position relative to 30, 50, and 70 and how the recent direction of RSI relates to the price trend when supported by the data.
+- **Levels.** Identify nearby observed swing highs and lows as potential resistance and support, with dates and prices. For sparse series, report the observed range instead. Explain which level would have to break to change the current technical reading, using conditional language.
+  
+Keep the analysis specific and readable. State which readings lack sufficient data. Use the chart's currency and formatting throughout. Verify figures against the series and avoid treating technical levels as price forecasts. The written analysis describes the opening view. Chart controls update the visual and its statistics.

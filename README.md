@@ -41,7 +41,7 @@ Single-asset replies use the language of the request. In the dashboard, switch b
 
 ## Historical charts
 
-Click an asset name in the interactive Codex dashboard and confirm the follow-up to open its price history. The chart starts at 90 days and uses the dashboard's selected language and currency where data is available. You can also request a chart by typing an asset and a date range.
+Click an asset name in the interactive Codex dashboard and confirm the follow-up to open its price history. The chart starts at 90 days and uses the dashboard's selected language and currency where data is available. The follow-up includes written technical analysis of the opening range. It covers trend and drawdown, moving averages, RSI, and potential support and resistance supported by dated observations. Changing the chart controls updates the chart and its range statistics. You can also request a chart by typing an asset and a date range.
 
 - **Ranges** — 7, 14, 30, 60, 90, or 180 days, 1, 2, or 5 years, year to date, all available data, or custom start and end dates. Coverage depends on the source and asset.
 - **Chart types** — Line charts for sampled prices or averages. Candles are available when the series has verified open, high, low, and close values.
@@ -113,6 +113,8 @@ The source notes document providers, quote units, timestamps, and alternatives. 
 | File | Purpose |
 | --- | --- |
 | [SKILL.md](SKILL.md) | Invocation behavior, watchlist, display rules, and conversion logic |
+| [history.md](history.md) | Historical data selection, chart controls, and technical analysis |
+| [assets/history.html](assets/history.html) | Interactive historical chart template |
 | [sources.md](sources.md) | Provider documentation and guidance on selecting and validating observations |
 | [assets/market-prices.html](assets/market-prices.html) | Interactive dashboard fragment containing a dated 42-row example checked on November 21, 2026 |
 
