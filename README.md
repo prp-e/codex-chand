@@ -38,15 +38,55 @@ If you already have a `codex-chand` folder, review or back up your local copy be
 
 Single-asset replies use the language of the request. In the dashboard, switch between Persian and English or between toman and US dollars. The language toggle updates labels, dates, number formatting, and reading direction while preserving the selected category and currency.
 
-## Default watchlist (42 rows)
+## Supported assets
 
-| Category | Assets |
-| --- | --- |
-| Fiat | USD, CAD, AUD, EUR, GBP, OMR, TRY, SAR, IQD, KWD, CNY, JPY, AED, CHF |
-| Crypto | BTC, ETH, USDT, SOL, TRX, XRP, BNB, DOGE, PAXG |
-| Metals | World gold and silver per troy ounce, world pure gold per gram, Iranian 18K and 24K gold per gram, melted gold per mesghal, platinum and palladium per troy ounce, and monthly copper and aluminum per metric ton |
-| Iranian gold coins | Emami, Bahar Azadi, half, quarter, and one-gram coins, each per piece |
-| Energy | Brent spot, WTI spot, and OPEC basket per barrel, plus Henry Hub spot natural gas per million BTU. Monthly Dubai crude is available on request. |
+The dashboard includes 42 default quotes. Dubai crude is available on request as a monthly benchmark.
+
+| Category | Asset or benchmark | Quote basis | Availability |
+| --- | --- | --- | --- |
+| Fiat | US dollar (`USD`) | 1 currency unit | Default |
+| Fiat | Canadian dollar (`CAD`) | 1 currency unit | Default |
+| Fiat | Australian dollar (`AUD`) | 1 currency unit | Default |
+| Fiat | Euro (`EUR`) | 1 currency unit | Default |
+| Fiat | British pound (`GBP`) | 1 currency unit | Default |
+| Fiat | Omani rial (`OMR`) | 1 currency unit | Default |
+| Fiat | Turkish lira (`TRY`) | 1 currency unit | Default |
+| Fiat | Saudi riyal (`SAR`) | 1 currency unit | Default |
+| Fiat | Iraqi dinar (`IQD`) | 1 currency unit | Default |
+| Fiat | Kuwaiti dinar (`KWD`) | 1 currency unit | Default |
+| Fiat | Chinese yuan (`CNY`) | 1 currency unit | Default |
+| Fiat | Japanese yen (`JPY`) | 1 currency unit | Default |
+| Fiat | UAE dirham (`AED`) | 1 currency unit | Default |
+| Fiat | Swiss franc (`CHF`) | 1 currency unit | Default |
+| Crypto | Bitcoin (`BTC`) | 1 coin or token | Default |
+| Crypto | Ethereum (`ETH`) | 1 coin or token | Default |
+| Crypto | Tether (`USDT`) | 1 coin or token | Default |
+| Crypto | Solana (`SOL`) | 1 coin or token | Default |
+| Crypto | TRON (`TRX`) | 1 coin or token | Default |
+| Crypto | XRP (`XRP`) | 1 coin or token | Default |
+| Crypto | BNB (`BNB`) | 1 coin or token | Default |
+| Crypto | Dogecoin (`DOGE`) | 1 coin or token | Default |
+| Crypto | PAX Gold (`PAXG`) | 1 coin or token | Default |
+| Metals | World gold (`XAU`) | 1 troy ounce | Default |
+| Metals | World silver (`XAG`) | 1 troy ounce | Default |
+| Metals | Platinum (`XPT`) | 1 troy ounce | Default |
+| Metals | Palladium (`XPD`) | 1 troy ounce | Default |
+| Metals | World pure gold | 1 gram | Default |
+| Metals | Iranian 18K gold | 1 gram | Default |
+| Metals | Iranian 24K gold | 1 gram | Default |
+| Metals | Iranian melted gold | 1 mesghal | Default |
+| Metals | Copper | 1 metric ton (monthly average) | Default |
+| Metals | Aluminum | 1 metric ton (monthly average) | Default |
+| Iranian gold coins | Emami coin | 1 coin | Default |
+| Iranian gold coins | Bahar Azadi coin | 1 coin | Default |
+| Iranian gold coins | Half coin | 1 coin | Default |
+| Iranian gold coins | Quarter coin | 1 coin | Default |
+| Iranian gold coins | One-gram coin | 1 coin | Default |
+| Energy | Brent spot crude | 1 barrel | Default |
+| Energy | WTI spot crude | 1 barrel | Default |
+| Energy | OPEC Reference Basket | 1 barrel | Default |
+| Energy | Henry Hub spot natural gas | 1 million BTU | Default |
+| Energy | Dubai crude | 1 barrel (monthly average) | On request |
 
 ## Data and conversions
 
