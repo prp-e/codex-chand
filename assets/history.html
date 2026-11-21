@@ -1,6 +1,6 @@
 <section id="chand-history" lang="fa" dir="rtl">
   <h1 data-title></h1>
-  <div class="viz-row">
+  <div class="viz-row" data-settings>
     <button class="btn" type="button" data-lang>English</button>
     <label><span data-range-label></span> <select class="form-select" data-range></select></label>
     <label><span data-unit-label></span> <select class="form-select" data-unit></select></label>
@@ -15,6 +15,7 @@
 </section>
 <style>
 #chand-history {display:grid;gap:.65rem;color:var(--foreground)}
+#chand-history [data-settings][hidden] {display:none}
 #chand-history svg {display:block;width:100%;height:16rem;overflow:hidden}
 #chand-history [data-plot] {direction:ltr}
 #chand-history [data-point] {width:100%}
@@ -28,9 +29,10 @@
     q('title').textContent = 'دادهٔ تاریخی در دسترس نیست';
     return;
   }
+  q('settings').hidden = data.fixedView === true;
   const words = {
-    fa: ['بازه','واحد','نمودار','اندیکاتور','مشاهده','تومان','دلار آمریکا','خطی','کندل','بدون اندیکاتور','همه','روز','سال','از ابتدای سال','بازده','افت از سقف','بیشترین افت','پوشش','داده کافی نیست','سقف / کف بازه','شروع / سقف / کف / پایان','بازهٔ درخواستی'],
-    en: ['Range','Currency','Chart','Indicator','Observation','Toman','US dollars','Line','Candles','None','All','days','years','Year to date','Return','Drawdown','Max drawdown','Coverage','Insufficient data','Range high / low','Open / high / low / close','Requested dates']
+    fa: ['بازه','واحد','نمودار','اندیکاتور','مشاهده','تومان','دلار آمریکا','خطی','کندل','بدون اندیکاتور','همه','روز','سال','از ابتدای سال','بازده','افت از سقف','بیشترین افت','پوشش','داده کافی نیست','سقف / کف بازه','شروع / سقف / کف / پایان','بازهٔ درخواستی','واحد شاخص'],
+    en: ['Range','Currency','Chart','Indicator','Observation','Toman','US dollars','Line','Candles','None','All','days','years','Year to date','Return','Drawdown','Max drawdown','Coverage','Insufficient data','Range high / low','Open / high / low / close','Requested dates','Index points']
   };
   const intervals = [7,14,30,60,90,180,365,730,1826,'ytd','all'];
   const day = 86400000;
@@ -111,7 +113,7 @@
     const presets = intervals.map(v => [v,v==='all'?w[10]:v==='ytd'?w[13]:v>=365?number(Math.round(v/365),0)+' '+w[12]:number(v,0)+' '+w[11]]);
     if (data.span) presets.unshift(['custom',w[21]]);
     options(range,presets,String(data.span ? 'custom' : data.range || 90));
-    options(unit,Object.keys(data.series).map(key=>[key,key==='toman'?w[5]:w[6]]),data.unit || 'toman');
+    options(unit,Object.keys(data.series).map(key=>[key,key==='points'?w[22]:key==='toman'?w[5]:w[6]]),data.unit || 'toman');
     const series = data.series[unit.value];
     const dated = series.rows.map(([stamp,close,o,h,l]) => ({time:Date.parse(stamp),close,open:o,high:h,low:l}));
     const hasOHLC = series.ohlc === true && dated.filter(r=>Number.isFinite(r.close)).every(r=>[r.open,r.high,r.low].every(Number.isFinite));
@@ -161,7 +163,7 @@
       const digits = unit.value==='toman'?0:6;
       q('detail').textContent = !r?'':[
         date(r.time),
-        candles?w[20]+' '+[r.open,r.high,r.low,r.close].map(v=>number(v,digits)).join(' / '):number(r.close,digits)+' '+w[unit.value==='toman'?5:6],
+        candles?w[20]+' '+[r.open,r.high,r.low,r.close].map(v=>number(v,digits)).join(' / '):number(r.close,digits)+' '+w[unit.value==='points'?22:unit.value==='toman'?5:6],
         field==='none'?'':overlay.selectedOptions[0].text+' '+number(r[field],digits)
       ].filter(Boolean).join(' · ');
     }
