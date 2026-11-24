@@ -199,8 +199,8 @@
     const chartType = label('type');
     const indicator = label('indicator');
     const prompt = en
-      ? '$codex-chand Show interactive historical prices and detailed technical analysis for ' + asset + ' (' + category + ') in English. Use ' + range + ', ' + currency + ', chart type: ' + chartType + ', and initial indicator: ' + indicator + '. If candles are unavailable, show a labeled line chart. Base the written analysis on the opening selection. Render the historical chart in fixed view (fixedView: true) with no settings menu.'
-      : '$codex-chand نمودار تاریخی تعاملی «' + asset + '» (' + englishName + '؛ ' + category + ') را به فارسی نشان بده. بازه: ' + range + '؛ واحد: ' + currency + '؛ نوع نمودار: ' + chartType + '؛ اندیکاتور اولیه: ' + indicator + '. اگر دادهٔ کندل موجود نیست، نمودار خطی با برچسب نشان بده. تحلیل تکنیکال جزئی را بر اساس همین بازه و واحد بنویس. نمودار را در حالت ثابت (fixedView: true)، بدون منوی تنظیمات، نشان بده.';
+      ? '$codex-chand Show interactive historical prices and detailed technical and source-backed fundamental analysis for ' + asset + ' (' + category + ') in English. Use ' + range + ', ' + currency + ', chart type: ' + chartType + ', and initial indicator: ' + indicator + '. If candles are unavailable, show a labeled line chart. Base the technical analysis on the opening selection and connect dated fundamental evidence to the selected period. Render the historical chart in fixed view (fixedView: true) with no settings menu.'
+      : '$codex-chand نمودار تاریخی تعاملی «' + asset + '» (' + englishName + '؛ ' + category + ') را به فارسی نشان بده. بازه: ' + range + '؛ واحد: ' + currency + '؛ نوع نمودار: ' + chartType + '؛ اندیکاتور اولیه: ' + indicator + '. اگر دادهٔ کندل موجود نیست، نمودار خطی با برچسب نشان بده. تحلیل تکنیکال جزئی را بر اساس همین بازه و واحد بنویس و تحلیل بنیادی مستند را با شواهد تاریخ‌دار مرتبط با بازه ارائه کن. نمودار را در حالت ثابت (fixedView: true)، بدون منوی تنظیمات، نشان بده.';
     historyStatus.textContent = '';
     historySubmit.disabled = true;
     try {
