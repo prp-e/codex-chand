@@ -1,10 +1,17 @@
 # Codex Chand | کدکس چند
 
-**Tehran market quotes, historical charts, and technical analysis in Persian and English.**
+**Tehran market quotes, historical charts, and technical and fundamental analysis in Persian and English.**
 
 Run `$codex-chand` for the 60-quote dashboard, add an asset for a one-line quote, or add a date range to explore price history. Quotes are available in toman and US dollars where source coverage permits.
 
-[فارسی](README-fa.md) · [Install](#install) · [Usage](#usage) · [Historical charts](#historical-charts) · [Supported assets](#supported-assets)
+[فارسی](README-fa.md) · [Install](#install) · [Usage](#usage) · [Historical charts](#historical-charts) · [Supported assets](#supported-assets) · [Changelog](#changelog)
+
+## Changelog
+
+### 2026-11-25
+
+- Dashboard chart requests now include AI-written fundamental analysis alongside technical analysis in Persian or English. The analysis cites dated sources, covers the drivers relevant to the asset, and explains where evidence is limited.
+- You can also request fundamental analysis directly. For example, run `$codex-chand fundamental analysis of Tehran open-market USD`.
 
 ## Screenshots
 
@@ -58,7 +65,7 @@ Single-asset replies use the language of the request. In the dashboard, switch b
 
 1. Click an asset name in the interactive Codex dashboard. A settings form opens directly below that asset.
 2. Select a date range, currency, chart type, and indicator. The form starts with 90 days and the dashboard's current currency.
-3. Select **Show chart and analysis** and confirm the follow-up in Codex. The form closes, and Codex displays the chart and written technical analysis using your selections where data is available.
+3. Select **Show chart and analysis** and confirm the follow-up in Codex. The form closes, and Codex displays the chart and written technical and fundamental analysis using your selections where data is available.
 
 The result keeps the selected settings and includes an observation scrubber. The analysis covers trend, drawdown, moving averages, RSI, and potential support and resistance backed by dated observations. You can also request an interactive chart in chat by typing an asset and a date range. Use a direct request for custom start and end dates.
 
@@ -153,6 +160,7 @@ Stock and fund quotes use the latest verified session close. Indices remain in i
 | --- | --- |
 | [SKILL.md](SKILL.md) | Invocation behavior, watchlist, display rules, and conversion logic |
 | [history.md](history.md) | Historical data selection, chart controls, and technical analysis |
+| [fundamentals.md](fundamentals.md) | Fundamental drivers by asset class, source selection, and historical cutoffs |
 | [assets/history.html](assets/history.html) | Interactive historical chart template |
 | [sources.md](sources.md) | Provider documentation and guidance on selecting and validating observations |
 | [assets/market-prices.html](assets/market-prices.html) | Interactive dashboard fragment containing a dated 60-row example checked on November 21, 2026 |
